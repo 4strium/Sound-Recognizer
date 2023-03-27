@@ -1,21 +1,24 @@
 import speech_recognition as sr
 import os
-from pydub import AudioSegment
 import tkinter                      # Module pour créer une interface graphique, et ses dépendances.
 from tkinter import *               
 from tkinter import messagebox
 from tkinter import filedialog as fd
 from tkinter import ttk 
+from pydub import AudioSegment
+
+
 
 
 def analyse_fichier():
     """
     Procédure appelée quand l'user. appuie sur le bouton "Analyser un fichier"
     """
+    global button_ouverture_window, i, r
 
     # L'utilisateur ne pourra sélectionner que les fichiers textes :
     filetypes = [
-        ('Fichiers audios', '*.wav', '*mp3')
+        ('Fichiers audios', '.wav .mp3')
     ]
     
     # Un pop-up apparaît sur l'écran pour séléctionner le fichier à compresser.
@@ -29,10 +32,12 @@ def analyse_fichier():
 
     # Conversion en d'un fichier .mp3 en .wav :
     if file_extension == '.mp3' :
-        sound = AudioSegment.from_mp3(file_opened)
-        dst = open("mp3_to_wav.wav", "w")
-        sound.export(dst, format="wav")
-        file_opened = open("mp3_to_wav.wav", "r")
+        input_path = os.path.abspath(file_opened)
+        output_path = str(os.getcwd() + '/temp/audio_file_converted.wav')
+        #conversion
+        audio = AudioSegment.from_file(input_path)
+        audio.export(output_path, format="wav")
+        file_opened = open(output_path, "rb")
         file_extension = '.wav'
     
     if file_extension == '.wav' :
@@ -71,6 +76,14 @@ canvas_accueil = Canvas( root, width = 1080, height = 720)
 canvas_accueil.pack(fill = "both", expand = True)
 canvas_accueil.create_image( 0, 0, image = bg, anchor = "nw")
 
+# J'affiche un titre sur ma page d'accueil :
+i=canvas_accueil.create_text(540.45, 137, text=" Cliquez sur ce bouton pour ouvrir \n le fichier audio à analyser : ", font=("Helvetica", 42), fill="white", justify = CENTER)
+r=canvas_accueil.create_rectangle(canvas_accueil.bbox(i),fill="#7900ce", width = 1)                                                            
+canvas_accueil.tag_lower(r,i)
+
+# Définition du bouton pour ouvrir le fichier :
+button_ouverture = Button(root, text="Ouvrir un fichier audio", command=analyse_fichier, font=("Helvetica", 26), fg='white', bg="#7900ce", height = 2, width = 24)
+button_ouverture_window = canvas_accueil.create_window(300, 425, anchor='nw', window=button_ouverture)
 
 def msg_remerciement():
     '''
