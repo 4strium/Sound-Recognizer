@@ -20,6 +20,8 @@ def analyse_fichier():
     filetypes = [
         ('Fichiers audios', '.wav .mp3')
     ]
+
+    canvas_accueil.delete(button_ouverture_window)
     
     # Un pop-up apparaît sur l'écran pour séléctionner le fichier à compresser.
     file_opened = fd.askopenfilename(
@@ -51,12 +53,32 @@ def analyse_fichier():
             except:
                 print("Ressayez s'il vous plaît...")
 
+        file_to_save = fd.asksaveasfilename(
+            initialdir='/', 
+            title='Enregistrer le fichier texte', 
+            filetypes=[('Fichiers textes', 'txt.*')]
+        )
 
-        file = open("résultat.txt", "w")
-        file.write("J'ai compris le texte suivant : \n" + datafr)
+        file_extension_2 = os.path.splitext(os.path.abspath(file_to_save))[1]
 
-        file.close()
+        if file_extension_2 != ".txt" :
+            file_to_save += ".txt"
+
+        data_text = "J'ai compris le texte suivant : \n" + datafr
+        result_txt_file = open(file_to_save, "w+")
+        result_txt_file.write(data_text)
+        result_txt_file.close()
     
+        bg = PhotoImage(file = "img\Background_IMAGE.png")
+        canvas_result = Canvas( root, width = 1080, height = 720)
+        canvas_result.pack(fill = "both", expand = True)
+        canvas_result.create_image( 0, 0, image = bg, anchor = "nw")
+
+        # J'affiche un titre sur ma page d'accueil :
+        x=canvas_result.create_text(540.45, 137, text=" Cliquez sur ce bouton pour ouvrir \n le fichier audio à analyser : ", font=("Helvetica", 42), fill="white", justify = CENTER)
+        y=canvas_result.create_rectangle(canvas_result.bbox(x),fill="#7900ce", width = 1)                                                            
+        canvas_result.tag_lower(y,x)
+
     else :
         return 'Erreur'
     
