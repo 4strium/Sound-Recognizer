@@ -21,7 +21,12 @@ def analyse_fichier():
         ('Fichiers audios', '.wav .mp3')
     ]
 
+    # Message temporaire :
     canvas_accueil.delete(button_ouverture_window)
+    canvas_accueil.create_image( 0, 0, image = bg, anchor = "nw")
+    v=canvas_accueil.create_text(540.45, 137, text=" Chargement en cours... ", font=("Helvetica", 42), fill="white", justify = CENTER)
+    w=canvas_accueil.create_rectangle(canvas_accueil.bbox(v),fill="#7900ce", width = 1)                                                            
+    canvas_accueil.tag_lower(w,v)
     
     # Un pop-up apparaît sur l'écran pour séléctionner le fichier à compresser.
     file_opened = fd.askopenfilename(
@@ -29,6 +34,7 @@ def analyse_fichier():
         initialdir='/',
         filetypes=filetypes
     )
+
 
     file_extension = os.path.splitext(os.path.abspath(file_opened))[1]
 
@@ -69,15 +75,12 @@ def analyse_fichier():
         result_txt_file.write(data_text)
         result_txt_file.close()
     
-        bg = PhotoImage(file = "img\Background_IMAGE.png")
-        canvas_result = Canvas( root, width = 1080, height = 720)
-        canvas_result.pack(fill = "both", expand = True)
-        canvas_result.create_image( 0, 0, image = bg, anchor = "nw")
+        # Message de réussite :
+        canvas_accueil.create_image( 0, 0, image = bg, anchor = "nw")
+        x=canvas_accueil.create_text(540.45, 137, text=" Le fichier texte contenant le résultat \n a bien été enregistré ! ", font=("Helvetica", 42), fill="white", justify = CENTER)
+        y=canvas_accueil.create_rectangle(canvas_accueil.bbox(x),fill="#7900ce", width = 1)                                                            
+        canvas_accueil.tag_lower(y,x)
 
-        # J'affiche un titre sur ma page d'accueil :
-        x=canvas_result.create_text(540.45, 137, text=" Cliquez sur ce bouton pour ouvrir \n le fichier audio à analyser : ", font=("Helvetica", 42), fill="white", justify = CENTER)
-        y=canvas_result.create_rectangle(canvas_result.bbox(x),fill="#7900ce", width = 1)                                                            
-        canvas_result.tag_lower(y,x)
 
     else :
         return 'Erreur'
